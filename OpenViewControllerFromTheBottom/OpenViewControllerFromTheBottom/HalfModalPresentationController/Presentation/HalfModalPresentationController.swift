@@ -67,7 +67,7 @@ class HalfModalPresentationController: UIPresentationController {
             case .normal:
                 presentedView!.frame.origin.y = endPoint.y + containerView!.frame.height / 2
             case .adjustedOnce:
-                presentedView!.frame.origin.y = containerView!.frame.origin.y + 80
+                presentedView!.frame.origin.y =  endPoint.y + containerView!.frame.origin.y + 80
             }
             direction = velocity.y
             
@@ -104,15 +104,15 @@ class HalfModalPresentationController: UIPresentationController {
                 
                 presentedView.frame = frame
                 
-                if let navController = self.presentedViewController as? UINavigationController {
-                    self.isMaximized = true
-                    
-                    navController.setNeedsStatusBarAppearanceUpdate()
-                    
-                    // Force the navigation bar to update its size
-                    navController.isNavigationBarHidden = true
-                    navController.isNavigationBarHidden = false
-                }
+//                if let navController = self.presentedViewController as? UINavigationController {
+//                    self.isMaximized = true
+//
+//                    navController.setNeedsStatusBarAppearanceUpdate()
+//
+//                    // Force the navigation bar to update its size
+//                    navController.isNavigationBarHidden = true
+//                    navController.isNavigationBarHidden = false
+//                }
             }, completion: { (isFinished) in
                 self.state = state
             })
