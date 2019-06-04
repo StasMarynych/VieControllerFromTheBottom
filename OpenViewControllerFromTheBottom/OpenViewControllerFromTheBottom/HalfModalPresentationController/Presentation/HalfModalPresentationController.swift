@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AudioToolbox
 
 enum ModalScaleState {
     case adjustedOnce
@@ -57,6 +58,7 @@ class HalfModalPresentationController: UIPresentationController {
     @objc func onPan(pan: UIPanGestureRecognizer) -> Void {
         let endPoint = pan.translation(in: pan.view?.superview)
         
+        
         switch pan.state {
         case .began:
             presentedView!.frame.size.height = containerView!.frame.height
@@ -75,9 +77,11 @@ class HalfModalPresentationController: UIPresentationController {
         case .ended:
             if direction < 0 {
                 changeScale(to: .adjustedOnce)
+                occurImpact()
             } else {
                 if state == .adjustedOnce {
                     changeScale(to: .normal)
+                    occurImpact()
                 } else {
                     presentedViewController.dismiss(animated: true, completion: nil)
                 }
@@ -188,4 +192,31 @@ extension HalfModalPresentable where Self: UINavigationController {
         return false
     }
 }
+
+//vibration
+extension HalfModalPresentationController {
+    @objc private func haptic() {
+        switch UIDevice.current.value(forKey: "_feedbackSupportLevel") as? Int ?? 0 {
+        case 0:
+            print("haptic doesnt support by this device")
+        case 1:
+            AudioServicesPlaySystemSound(1519)
+        case 2:
+            let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
+            impactFeedbackGenerator.prepareForInterfaceBuilder()
+            impactFeedbackGenerator.impactOccurred()
+        default:
+            print("oopsie situation")
+        }
+    }
+    
+    func occurImpact() {
+        var timer: Timer?
+        timer = Timer.scheduledTimer(timeInterval: 0.11,
+                                     target: self, selector: #selector(haptic), userInfo: nil, repeats: false)
+    }
+    
+    
+}
+
 
